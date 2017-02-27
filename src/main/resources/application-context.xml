@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <tx:annotation-driven transaction-manager="txtManager"  />
+
+    <bean class="ua.goit.java.jdbc.Main" id="main">
+        <property name="employeeController" ref="employeeController"/>
+        <property name="projectController" ref="projectController"/>
+    </bean>
+
+    <bean class="ua.goit.java.jdbc.controllers.DeveloperController" id="employeeController">
+        <property name="txtManager" ref="txtManager"/>
+        <property name="developerDAO" ref="developerDao"/>
+    </bean>
+
+    <bean class="ua.goit.java.jdbc.controllers.ProjectController" id="projectController">
+        <property name="txtManager" ref="txtManager"/>
+        <property name="projectDAO" ref="projectDao"/>
+    </bean>
+
+    <bean id="developerDao" class="ua.goit.java.jdbc.models.jdbc.DeveloperDao">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean id="projectDao" class="ua.goit.java.jdbc.models.jdbc.ProjectDao">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean class="com.mchange.v2.c3p0.ComboPooledDataSource" id="dataSource" destroy-method="close">
+        <property name="driverClass" value="org.postgresql.Driver"/>
+        <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/java"/>
+        <property name="user" value="user"/>
+        <property name="password" value="1"/>
+    </bean>
+
+    <bean id="txtManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+</beans>
